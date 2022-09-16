@@ -1,0 +1,20 @@
+.card {
+  border: 1px solid FFE91F;
+  padding: 10px;
+  max-width: 200px;
+}
+body{
+  background-color: black;
+  color: #FFE91F;
+}
+pre{
+  
+  width: 570px;
+  flex-wrap: wrap;
+
+}
+#pic{
+  max-height:  300px;
+  max-width: 600px;
+  max-width: 600px;
+}
