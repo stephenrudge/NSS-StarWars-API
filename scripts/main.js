@@ -1,149 +1,195 @@
-import {fetchFilms, fetchLuke, fetchStarships, fetchHoth, fetchSpecies, fetchPlanets, } from "./starWarsData.js"
+import {
+  fetchLuke,
+  fetchFilms,
+  fetchStarshipsByPage,
+  fetchPlanets,
+} from "./starWarsData.js";
+
+const baseHTML = async () => {
+  document.getElementById("app").innerHTML = ` 
+  <div class="outer">
+  <div class="header">
+    <h1>Let's learn the ... </h1>
+    <img src="/styles/Kenner-A-New-Hope-ToyLine-logo.png">
+    <h1>API !!!</h1>
+    </div></div>
+    <div class="form">
+    <p>1. Select any API call below and then click the "FETCH API RESULTS" button to display the data (required)</p>
+    <p>2. The "CLEAR API RESULTS" button can be used to clear out the currently displayed API results (optional)</p></div>
+    <div class="inputs">
+    <input id="displayLukeRadio" name="displayOption" type="radio" />
+    <label for="displayLukeRadio">Display Luke Skywalker data</label><br>
+    <input id ="displayStarshipsRadio" name="displayOption" type="radio" />
+    <label for="displayStarshipsRadio">Display the number of starships returned from page 4</label><br>
+    <input id="displayFilmsRadio" name="displayOption" type="radio" />
+    <label for="displayFilmsRadio">Display all the films and their release date</label><br>
+    <input id ="displayPlanetsRadio" name="displayOption" type="radio" />
+    <label for="displayPlanetsRadio">List the planets in order of size (diameter) from smallest to largest</label><br><br>
+    <button id="runCode" type="button" class="button">FETCH API RESULTS</button>
+    <button id="delete" type="button" class="button">CLEAR API RESULTS</button><br><br></div>`;
+};
+
+baseHTML();
 
 const displayLuke = async () => {
-  const data = await fetchLuke()
-  renderLukeToDOM(data)
-}
+  const data = await fetchLuke();
+  renderLukeToDOM(data);
+};
 
-let html = ""
 const renderLukeToDOM = (data) => {
-    html += `<article>
+  document.getElementById("apiResults").innerHTML = "";
+  document.getElementById("codeSnippets").innerHTML = "";
+  let html = "";
+  html += `
+  <h3 class="resultsHeader">Star Wars API Results:</h3>
+  <div class="results">
+    <article id="code">
       <section class="card">
         <p>Name: ${data.name}</p>
         <p>height: ${data.height}</p>
       </section>
-    </article>
-  `
-  document.getElementById('app').innerHTML = html
-}
-
-
-const displayStarships = async () => {
-  const data = await fetchStarships()
-  renderStarshipsToDOM(data)
-}
-const renderStarshipsToDOM = (data) => {
-  html+= `<article>
-  <section class="card">
-  <p> Number of Starships: ${data.results.length}</p>
-  </section>
-  </article>
-  ` 
-  document.getElementById('app').innerHTML = html 
-}
-
+    </article></div>
+  `;
+  document.getElementById("apiResults").innerHTML = html;
+  document.getElementById("codeSnippets").innerHTML = `<h3 class="resultsHeader right">JavaScript:</h3>
+  <iframe src="fetchLukeCode.html" name="targetframe" allowTransparency="true" scrolling="yes" frameborder="0" >
+  </iframe>`;
+};
 
 const displayFilms = async () => {
-  const filmData = await fetchFilms()
-  console.log(`film Data: `.filmData)
-  const filmResults = filmData.results
-  renderFilmsToDOM(filmResults)
-}
+  const filmData = await fetchFilms();
+  console.log("Film Data: ", filmData);
+  const filmResults = filmData.results;
+  console.log("Film Results: ", filmResults);
+  renderFilmsToDOM(filmResults);
+};
 
 const renderFilmsToDOM = (films) => {
+  document.getElementById("apiResults").innerHTML = "";
+  document.getElementById("codeSnippets").innerHTML = "";
+  let html = `<h3 class="resultsHeader">Star Wars API Results:</h3><div class="results"><br>`;
   for (const film of films) {
-    html +=`
-    <article>
-    <section class="card">
-    <p><b> Title:</b><i>${film.title} </i></p>
-    <p><b>Director:</b><i> ${film.director}</i></p>
-    <p><b> Release Date:</b><i> ${film.release_date}</i></p>
-    <p><b>Opening Crawl:</b><i>${film.opening_crawl} 
-    </section>
-    </article>
-    `
-  }
-  document.getElementById('app').innerHTML = html
-}
-
-const displayHoth = async () => {
-  const data = await fetchHoth()
-  renderHothToDOM(data)
-}
-
-
-const renderHothToDOM = (data) => {
-  html += `<article>
-  <section class="card">
-  <p>Name: ${data.name}</p>
-  <p>Gravity: ${data.gravity}</p>
-  </section>
-  </article>
-  `
-}
-document.getElementById('app').innerHTML = html
-
-const displayPlanetLoops = async () => {
-  let page = 1
-  let allPlanets = []
-  let lastResult = []
-
-  do {
-
-    try {
-
-      const data = await fetchPlanets(page)
-      lastResult = data
-      allPlanets.push(...data.results)
-      page++
-    } catch (err) {console.error(`Oops something is wrong ${err}`)}
-
-  } while (lastResult.next !== null)
-
-  allPlanets.sort ((a,b) => a.diameter - b.diameter)
-  renderPlanetsToDOM(allPlanets)
-}
-const renderPlanetsToDOM= (planets) =>{
-
-  for (const planet of planets) {
     html += `
     <article>
-    <section class="card">
-    <p><b>Planet: ${planet.name}
-    <ul>
-    <li> Diameter: ${planet.diameter}</li>
-    </ul>
-    </section>
-    <article>
-    `
-  }
-  document.getElementById("app").innerHTML = html
-};
-
-
-
-const displaySpecies = async () => {
-  const speciesData = await fetchSpecies()
-  const speciesResults = speciesData.results
-  renderSpeciesToDOM(speciesResults)
-};
-
-const renderSpeciesToDOM = (species) => {
-  for (const Species of species) {
-    html +=`
-    <article>
-    <section class="card">
-    <p><b> Species: </b><i>${Species.name} </i></p>
-    <p><b>Language: </b><i> ${Species.language}</i></p>
-    </section>
+      <section class="card">
+        <p><b>Title:</b> ${film.title}</p>
+        <p><b>Director:</b> ${film.director}</p>
+        <p><b>Release Date:</b> ${film.release_date}
+        <p><b>Opening Crawl:</b> ${film.opening_crawl}
+      </section>
     </article>
-    `
+  `;
   }
-  document.getElementById('app').innerHTML = html
-}
 
-let planetButton = document.querySelector("#displayPlanets")
+  html += `</div>`;
+  document.getElementById("apiResults").innerHTML = html;
+  document.getElementById("codeSnippets").innerHTML = `<h3 class="resultsHeader right">JavaScript:</h3>
+  <iframe src="fetchFilmsCode.html" name="targetframe" allowTransparency="true" scrolling="yes" frameborder="0" >
+  </iframe>`;
+};
 
-planetButton.addEventListener (
-"click", () => {
-  displayPlanetLoops()
+const displayStarships = async (num) => {
+  const starshipData = await fetchStarshipsByPage(num);
+  console.log(`Starship Data: `, starshipData);
+  renderStarshipsToDOM(starshipData);
+};
 
-}
-)
+const renderStarshipsToDOM = (starships) => {
+  document.getElementById("apiResults").innerHTML = "";
+  document.getElementById("codeSnippets").innerHTML = "";
+  let html = "";
+  html += `
+  <h3 class="resultsHeader">Star Wars API Results:</h3>
+  <div class="results">
+    <article class="flexItem">
+      <section class="card">
+        <p>There are ${starships.results.length} starships on page #4</p>
+      </section>
+    </article></div>
+  `;
+  document.getElementById("apiResults").innerHTML = html;
+  document.getElementById("codeSnippets").innerHTML = `<h3 class="resultsHeader right">JavaScript:</h3>
+  <iframe src="fetchStarshipsCode.html" name="targetframe" allowTransparency="true" scrolling="yes" frameborder="0" >
+  </iframe>`;
+};
 
+let runCodeButton = document.querySelector("#runCode");
 
-await displayLuke()//2
-await displayStarships()//3
-await displayHoth()//1
-await displayFilms()//5
-await displaySpecies()
+const planetRadio = document.querySelector('input[id="displayPlanetsRadio"]');
+const lukeRadio = document.querySelector('input[id="displayLukeRadio"]');
+const starshipRadio = document.querySelector(
+  'input[id="displayStarshipsRadio"]'
+);
+const filmRadio = document.querySelector('input[id="displayFilmsRadio"]');
+
+runCodeButton.addEventListener("click", () => {
+  if (planetRadio.checked) {
+    displayPlanetLoop();
+    planetRadio.checked = false;
+  } else if (lukeRadio.checked) {
+    displayLuke();
+    lukeRadio.checked = false;
+  } else if (starshipRadio.checked) {
+    displayStarships(4);
+    starshipRadio.checked = false;
+  } else if (filmRadio.checked) {
+    displayFilms();
+    filmRadio.checked = false;
+  }
+});
+
+const deleteButton = document.querySelector("#delete");
+
+deleteButton.addEventListener("click", () => {
+  document.getElementById("apiResults").innerHTML = "";
+  document.getElementById("codeSnippets").innerHTML = "";
+});
+
+// document.addEventListener("click", (event) => {
+//   if (event.target.id === "showCode") {
+//     document.getElementById("codeSnippets").innerHTML = `
+//     <div class="codeSnippetStyle">
+//     <img src="styles/fetchLukeCode.jpg"></div>
+//     `;
+//   }
+// });
+
+const displayPlanetLoop = async () => {
+  let page = 1;
+  let allPlanets = [];
+  let lastResult = [];
+
+  do {
+    try {
+      const data = await fetchPlanets(page);
+      lastResult = data;
+      allPlanets.push(...data.results);
+      page++;
+    } catch (err) {
+      console.error(`Oops, something is wrong ${err}`);
+    }
+  } while (lastResult.next !== null);
+
+  allPlanets.sort((a, b) => a.diameter - b.diameter);
+  renderPlanetsToDOM(allPlanets);
+};
+
+const renderPlanetsToDOM = (planets) => {
+  document.getElementById("apiResults").innerHTML = "";
+  document.getElementById("codeSnippets").innerHTML = "";
+  let html = `<h3 class="resultsHeader">Star Wars API Results:</h3><div class="results">`;
+  let planetNum = 1;
+  for (const planet of planets) {
+    html += ` Planet #${planetNum}: ${planet.name}<br>
+      Diameter: ${planet.diameter}<br><br>`;
+
+    planetNum++;
+  }
+  html += `</div>`;
+
+  document.getElementById("apiResults").innerHTML = html;
+  document.getElementById(
+    "codeSnippets"
+  ).innerHTML = `<h3 class="resultsHeader right">JavaScript:</h3><iframe src="fetchPlanetsCode.html" name="targetframe" allowTransparency="true" scrolling="yes" frameborder="0" >
+  </iframe>`;
+};

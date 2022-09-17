@@ -8,54 +8,23 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="./styles/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"> 
   </head>
   <body>
-    <img src="styles/Kenner-A-New-Hope-ToyLine-logo.png" id="pic">
+    <div class="container">
+      <div id="app" class="test">
+  </div>
+  <div class="bottom">
+    <div id="apiResults">
 
-    <h1>
-      Let's Learn Star Wars API!
-    </h1>
-    <button id="displayPlanets" type="button">Run Code</button>
-    <code><pre>
-      const displayPlanetLoops = async () => {
-        let page = 1
-        let allPlanets = []
-        let lastResult = []
-      
-        do {
-      
-          try {
-      
-            const data = await fetchPlanets(page)
-            lastResult = data
-            allPlanets.push(...data.results)
-            page++
-          } catch (err) {console.error(`Oops something is wrong ${err}`)}
-      
-        } while (lastResult.next !== null)
-      
-        allPlanets.sort ((a,b) => a.diameter - b.diameter)
-        renderPlanetsToDOM(allPlanets)
-      }
-      const renderPlanetsToDOM= (planets) =>{
-      
-        for (const planet of planets) {
-          html += `
-          &lt;article&gt;
-          &lt;section class="card"&gt;
-          &lt;p&gt;&lt;b&gt; Planet: ${planet.name}
-          &lt;ul&gt;
-          &lt;li&gt; Diameter: ${planet.diameter}&lt;/li&gt;
-          &lt;/ul&gt;
-          &lt;/section&gt;
-          &lt;article&gt;
-          `
-        }
-        document.getElementById("app").innerHTML = html
-      };
-</pre></code>
-   <div id="app"></div>
+    </div>
+   <div id="codeSnippets">
     
+   </div>
+   </div>
+   </div>
     <script type="module" src="./scripts/main.js" async defer></script>
   </body>
 </html>
